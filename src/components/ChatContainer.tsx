@@ -19,12 +19,72 @@ const ChatContainer: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
-
   const generateChatTitle = (firstMessage: string): string => {
     // Generate a title from the first message
     const words = firstMessage.trim().split(' ').slice(0, 4);
     return words.join(' ') + (firstMessage.split(' ').length > 4 ? '...' : '');
   };
+
+  const simulateBotResponse = useCallback((userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    // Table-specific responses
+    if (lowerMessage.includes('table') || lowerMessage.includes('data') || lowerMessage.includes('comparison')) {
+      return `Here's a sample table with some data:
+
+| Product | Price | Rating | Stock |
+|---------|-------|--------|-------|
+| iPhone 15 | $999 | ⭐⭐⭐⭐⭐ | In Stock |
+| Samsung Galaxy S24 | $899 | ⭐⭐⭐⭐ | Limited |
+| Google Pixel 8 | $699 | ⭐⭐⭐⭐ | In Stock |
+| OnePlus 12 | $799 | ⭐⭐⭐⭐ | Out of Stock |
+
+This table demonstrates **markdown table formatting** with various data types including text, prices, ratings, and status indicators.`;
+    }
+
+    if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar') || lowerMessage.includes('time')) {
+      return `Here's this week's schedule:
+
+| Day | Morning | Afternoon | Evening |
+|-----|---------|-----------|---------|
+| Monday | Team Meeting | Code Review | **Free Time** |
+| Tuesday | Project Planning | Development | Client Call |
+| Wednesday | *Design Review* | Testing | Documentation |
+| Thursday | Sprint Planning | Implementation | Code Review |
+| Friday | Demo Preparation | **Team Demo** | Retrospective |
+
+You can see how tables can include **bold text**, *italic text*, and other markdown formatting!`;
+    }
+
+    const responses = [
+      "That's an interesting point! Can you tell me more about it?",
+      "I understand what you're saying. How can I help you with that?",
+      "Thanks for sharing that with me. What would you like to know?",
+      "That sounds important to you. Would you like to explore this further?",
+      "I see. Can you provide more details about this topic?",
+      "Interesting! What's your perspective on this?",
+      "I appreciate you bringing this up. How can I assist you?",
+      "That's a great question! Let me think about that for a moment.",
+      "I understand your concern. What specific information are you looking for?",
+      "Thank you for explaining that. What would be most helpful for you right now?"
+    ];
+
+    // Simple keyword-based responses
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+      return "Hello! Welcome to our chat. How can I assist you today?\n\nTry asking me about **tables**, **schedules**, or **data** to see markdown table examples!";
+    }
+    if (lowerMessage.includes('help') || lowerMessage.includes('assist')) {
+      return "I'm here to help! What do you need assistance with?\n\n**Tip:** I can show you markdown tables - just ask about 'table', 'data', or 'schedule'!";
+    }
+    if (lowerMessage.includes('thank')) {
+      return "You're very welcome! Is there anything else I can help you with?";
+    }
+    if (lowerMessage.includes('bye') || lowerMessage.includes('goodbye')) {
+      return "Goodbye! It was great chatting with you. Have a wonderful day!";
+    }
+
+    return responses[Math.floor(Math.random() * responses.length)];
+  }, []);
 
   const handleMCPSerVerMessgeResponse = useCallback((sessionId: string, data: string, done: boolean, _streamMessageId: string | null) => {
     setAppState(prev => ({
@@ -153,16 +213,46 @@ const ChatContainer: React.FC = () => {
           };
         }
         return session;
-      })
-    }));    
+      })    }));    
     setIsLoading(true);
-    sendMessage(
-      sessionId,
-      messageText,
-      (data: string, done: boolean) => handleMCPSerVerMessgeResponse(sessionId!, data, done, _streamMessageId)
-    );
+    
+    try {
+      sendMessage(
+        sessionId,
+        messageText,
+        (data: string, done: boolean) => handleMCPSerVerMessgeResponse(sessionId!, data, done, _streamMessageId)
+      );
+    } catch (error) {
+      console.warn('MCP server not available, using fallback response:', error);
+      
+      // Fallback to simulated response
+      setTimeout(() => {
+        const botResponse: Message = {
+          id: generateId(),
+          text: simulateBotResponse(messageText),
+          sender: 'bot',
+          timestamp: new Date()
+        };
 
-  }, [appState.currentSessionId, createNewSession, handleMCPSerVerMessgeResponse]);
+        setAppState(prev => ({
+          ...prev,
+          sessions: prev.sessions.map(session => {
+            if (session.id === sessionId) {
+              return {
+                ...session,
+                messages: [...session.messages, botResponse],
+                lastActivity: new Date()
+              };
+            }
+            return session;
+          })
+        }));
+        
+        setIsLoading(false);
+      }, 1000 + Math.random() * 2000); // Random delay between 1-3 seconds
+    }
+
+  }, [appState.currentSessionId, createNewSession, handleMCPSerVerMessgeResponse, simulateBotResponse]);
 
   const getCurrentSession = (): ChatSession | null => {
     return appState.sessions.find(s => s.id === appState.currentSessionId) || null;

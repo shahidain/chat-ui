@@ -80,9 +80,15 @@ export async function sendMessage(sessionId: string, message: string, handleChat
       },
       body: JSON.stringify({ message })
     });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
     const reader = response.body?.getReader();
     const decoder = new TextDecoder('utf-8');
-    if (!reader) return null;
+    if (!reader) throw new Error('No response body reader available');
+    
     let result = '';
     while (true) {
       const { done, value } = await reader.read();
@@ -92,7 +98,7 @@ export async function sendMessage(sessionId: string, message: string, handleChat
     }
     handleChatUpdate(result, true);
   } catch (error) {
-    console.error("Error sending message:", error);
-    return null;
+    console.warn("MCP server error, falling back to simulation:", error);
+    throw error; // Re-throw to trigger fallback in ChatContainer
   }
 }

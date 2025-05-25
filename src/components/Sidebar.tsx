@@ -136,7 +136,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="sidebar-footer">
           <div className="app-info">
-            <span>Chat UI v1.0</span>
+            <span style={{fontSize: "14px", color:"#000"}}>JPMC AIFusion Chat UI</span>
+            <div style={{fontSize: "12px", color:"#000"}}>Version: 1.0.1</div>
           </div>
         </div>
       </aside>
