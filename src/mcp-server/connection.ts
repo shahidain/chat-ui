@@ -1,0 +1,98 @@
+// Connection configuration
+const SERVER_URL = 'http://localhost:4000';
+
+export async function connectToServer(handleChatUpdate: (data: string) => void) {
+  try {
+    // Step 1: Get initial connection with session ID
+    const response = await fetch(`${SERVER_URL}/sse`, {
+      method: 'GET',
+      mode: 'cors',
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    if (data.success) {
+      return connectToSSEStream(handleChatUpdate);
+    } else {
+      throw new Error("Failed to establish connection to server");
+    }
+  } catch (error) {
+    console.warn("MCP server not available, running in offline mode:", error);
+    return null;
+  }
+}
+
+function connectToSSEStream(handleChatUpdate: (data: string) => void) {
+  try {
+    // Create URL with session ID for potential reconnection handling
+    const streamUrl = `${SERVER_URL}/sse/stream`;
+    const eventSource = new EventSource(streamUrl);
+    
+    // Handle connection open
+    eventSource.onopen = function() {
+      console.log("SSE stream connection established");
+    };
+    
+    // Handle incoming messages
+    eventSource.onmessage = function(event) {
+      try {        
+        const data = JSON.parse(event.data);
+        // Check if this is a connection confirmation message
+        if (data.jsonrpc === "2.0" && 
+            data.method === "message" && 
+            data.params && 
+            data.params.type === "connection_response") {
+          localStorage.setItem('mcp-session-id', data.params.sessionId);
+        }
+      } catch (e) {
+        console.log(`Response is not JSON object, passing raw data: ${e}`);
+        handleChatUpdate(event.data);
+      }
+    };
+    
+    // Handle errors
+    eventSource.onerror = function(error) {
+      console.warn("SSE connection error, running in offline mode:", error);
+      eventSource.close();
+    };
+    
+    return eventSource;
+  } catch (error) {
+    console.warn("Failed to create SSE connection:", error);
+    return null;
+  }
+}
+
+// Function to send messages to the server
+export async function sendMessage(sessionId: string, message: string, handleChatUpdate: (data: string, done: boolean) => void) {
+  try {
+    const response = await fetch(`${SERVER_URL}/messages?sessionId=${sessionId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ message })
+    });
+    const reader = response.body?.getReader();
+    const decoder = new TextDecoder('utf-8');
+    if (!reader) return null;
+    let result = '';
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      result += decoder.decode(value, { stream: true });
+      handleChatUpdate(result, done);
+    }
+    handleChatUpdate(result, true);
+  } catch (error) {
+    console.error("Error sending message:", error);
+    return null;
+  }
+}

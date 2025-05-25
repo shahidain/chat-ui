@@ -1,0 +1,130 @@
+.message {
+  display: flex;
+  margin-bottom: 16px;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.message-user {
+  flex-direction: row-reverse;
+}
+
+.message-bot {
+  flex-direction: row;
+}
+
+.message-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 0 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  flex-shrink: 0;
+}
+
+.message-user .message-avatar {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.message-content {
+  max-width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-text {
+  padding: 12px 16px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.message-user .message-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+}
+
+.message-bot .message-text {
+  background: #f1f3f5;
+  color: #333;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.message-timestamp {
+  font-size: 11px;
+  color: #868e96;
+  margin-top: 4px;
+  padding: 0 4px;
+}
+
+.message-user .message-timestamp {
+  text-align: right;
+}
+
+.message-bot .message-timestamp {
+  text-align: left;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background: #666;
+  border-radius: 50%;
+  animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .message-content {
+    max-width: 85%;
+  }
+  
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    margin: 0 8px;
+  }
+  
+  .message-text {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+}
