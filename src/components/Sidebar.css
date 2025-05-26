@@ -240,25 +240,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 36px;
+  height: 36px;
   border: none;
   background: transparent;
   color: #6c757d;
   cursor: pointer;
-  border-radius: 4px;
-  opacity: 0;
+  border-radius: 50%;
+  opacity: 0.8;
   transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+  
+}
+
+.delete-session-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
   flex-shrink: 0;
 }
 
 .session-item:hover .delete-session-btn {
   opacity: 1;
+  background: rgba(108, 117, 125, 0.15);
 }
 
 .delete-session-btn:hover {
-  background: #f8d7da;
+  background: #f8d7da !important;
   color: #dc3545;
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .sidebar-footer {
@@ -288,8 +300,13 @@
 }
 
 .session-list::-webkit-scrollbar-thumb {
-  background: #dee2e6;
+  background: transparent;
   border-radius: 2px;
+  transition: background 0.2s ease;
+}
+
+.session-list:hover::-webkit-scrollbar-thumb {
+  background: #dee2e6;
 }
 
 .session-list::-webkit-scrollbar-thumb:hover {

@@ -116,8 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                           </span>
                         </div>
                       </div>
-                    </div>
-                    <button
+                    </div>                    <button
                       className="delete-session-btn"
                       onClick={(e) => {
                         e.stopPropagation();
@@ -125,7 +124,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                       }}
                       aria-label="Delete chat"
                     >
-                      <Trash2 size={14} />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 ))}
