@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             aria-label="Start new chat"
           >
             <Plus size={18} />
-            <span>New Chat</span>
+            <span>Start New Chat With AI</span>
           </button>
         </div>
 
@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         <div className="sidebar-footer">
           <div className="app-info">
             <span style={{fontSize: "14px", color:"#000"}}>JPMC AI Chat UI</span>
-            <div style={{fontSize: "12px", color:"#000"}}>Version: 1.0.1</div>
+            <div style={{fontSize: "11px", color:"#000"}}>Version: 1.0.1 &copy; 2025 JP Morgan Chase & Co.</div>
           </div>
         </div>
       </aside>
