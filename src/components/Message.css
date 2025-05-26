@@ -167,8 +167,12 @@
   border-bottom: none;
 }
 
-.message-text tbody tr:hover {
+.message-text tbody tr:nth-child(even) {
   background: #f8f9fa;
+}
+
+.message-text tbody tr:hover {
+  background: #e9ecef;
 }
 
 /* User message table styles */
@@ -182,8 +186,12 @@
   color: #333;
 }
 
+.message-user .message-text tbody tr:nth-child(even) {
+  background: rgba(248, 249, 250, 0.8);
+}
+
 .message-user .message-text tbody tr:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(233, 236, 239, 0.8);
 }
 
 /* Markdown general styles */

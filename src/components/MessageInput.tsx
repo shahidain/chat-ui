@@ -47,9 +47,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
-  }, []);
-
-  return (
+  }, []);  return (
     <div className="message-input-container">
       <form onSubmit={handleSubmit} className="message-input-form">
         <div className="message-input-wrapper">
