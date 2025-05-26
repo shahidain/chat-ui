@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       return date.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
+        hour12: true
       });
     } else if (diffInHours < 168) { // Less than a week
       return date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="sidebar-footer">
           <div className="app-info">
-            <span style={{fontSize: "14px", color:"#000"}}>JPMC AIFusion Chat UI</span>
+            <span style={{fontSize: "14px", color:"#000"}}>JPMC AI Chat UI</span>
             <div style={{fontSize: "12px", color:"#000"}}>Version: 1.0.1</div>
           </div>
         </div>

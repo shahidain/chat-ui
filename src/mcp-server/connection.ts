@@ -3,7 +3,6 @@ const SERVER_URL = 'http://localhost:4000';
 
 export async function connectToServer(handleChatUpdate: (data: string) => void) {
   try {
-    // Step 1: Get initial connection with session ID
     const response = await fetch(`${SERVER_URL}/sse`, {
       method: 'GET',
       mode: 'cors',
@@ -37,6 +36,7 @@ function connectToSSEStream(handleChatUpdate: (data: string) => void) {
     
     // Handle connection open
     eventSource.onopen = function() {
+      handleChatUpdate("true");
       console.log("SSE stream connection established");
     };
     
