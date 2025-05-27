@@ -21,7 +21,6 @@ const ChatContainer: React.FC = () => {
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
   const generateChatTitle = (firstMessage: string): string => {
-    // Generate a title from the first message
     const words = firstMessage.trim().split(' ').slice(0, 4);
     return words.join(' ') + (firstMessage.split(' ').length > 4 ? '...' : '');
   };
@@ -32,8 +31,6 @@ const ChatContainer: React.FC = () => {
       sessions: prev.sessions.map(session => {
         if (session.id === sessionId) {
           const updatedMessages = [...session.messages];
-          
-          // If this is the first chunk and no streaming message exists, create a new bot message
           if (_streamMessageId) {
             const messageIndex = updatedMessages.findIndex(msg => msg.id === _streamMessageId);
             if (messageIndex === -1) {
@@ -45,7 +42,6 @@ const ChatContainer: React.FC = () => {
               };
               updatedMessages.push(newStreamingMessage);
             } else {
-              // Update the existing streaming message
               updatedMessages[messageIndex] = {
                 ...updatedMessages[messageIndex],
                 text: data,
