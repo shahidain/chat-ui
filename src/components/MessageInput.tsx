@@ -17,8 +17,7 @@ const MessageInput: React.FC<MessageInputProps> = ({
   const [messageHistory, setMessageHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentDraft, setCurrentDraft] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const handleSubmit = (e: React.FormEvent) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() && !disabled) {
       const trimmedMessage = message.trim();
@@ -36,9 +35,10 @@ const MessageInput: React.FC<MessageInputProps> = ({
       
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto';
+        textareaRef.current.focus();
       }
     }
-  };  const handleKeyPress = (e: React.KeyboardEvent) => {
+  };const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -120,14 +120,13 @@ const MessageInput: React.FC<MessageInputProps> = ({
           >
             <Paperclip size={20} />
           </button>
-            <textarea
+          <textarea
             ref={textareaRef}
             value={message}
             onChange={handleInputChange}
             onKeyPress={handleKeyPress}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
-            disabled={disabled}
             className="message-textarea"
             rows={1}
             aria-label="Message input"
