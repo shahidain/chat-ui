@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { Message, ChatSession, AppState } from '../types/chat';
+import type { Message, ChatSession, AppState, ChartData } from '../types/chat';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import Sidebar from './Sidebar';
@@ -7,6 +7,7 @@ import { Menu, RadioIcon } from 'lucide-react';
 import { clsx } from 'clsx';
 import './ChatContainer.css';
 import { sendMessage, connectToServer } from '../mcp-server/connection';
+import { parseChartCommand } from '../utils/chartUtils';
 
 
 const ChatContainer: React.FC = () => {
@@ -25,7 +26,19 @@ const ChatContainer: React.FC = () => {
     return words.join(' ') + (firstMessage.split(' ').length > 4 ? '...' : '');
   };
 
+  const isJsonObject = (str: string): boolean => {
+    try {
+      const parsed = JSON.parse(str);
+      return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (exception) {
+      return false;
+    }
+  };
+
   const handleMCPSerVerMessgeResponse = useCallback((sessionId: string, data: string, done: boolean, _streamMessageId: string | null) => {
+    const isJsonObjectData: boolean = isJsonObject(data);
+    const chartMessage = '**Here is your requested chart**';
     setAppState(prev => ({
       ...prev,
       sessions: prev.sessions.map(session => {
@@ -34,17 +47,41 @@ const ChatContainer: React.FC = () => {
           if (_streamMessageId) {
             const messageIndex = updatedMessages.findIndex(msg => msg.id === _streamMessageId);
             if (messageIndex === -1) {
-              const newStreamingMessage: Message = {
-                id: _streamMessageId,
-                text: data,
-                sender: 'bot',
-                timestamp: new Date()
-              };
-              updatedMessages.push(newStreamingMessage);
+              
+              if (isJsonObjectData) { 
+                const parsedData = JSON.parse(data);
+                console.log('Received JSON data from MCP server:', parsedData);
+                const newMessage: Message = {
+                  id: _streamMessageId,
+                  text: chartMessage,
+                  sender: 'bot',
+                  timestamp: new Date()
+                };
+                const chartData: ChartData = {
+                  type: parsedData.chart_type,
+                  title: parsedData.chart_title || 'Chart',
+                  data: parsedData.chart_data,
+                  xKey: parsedData.xKey,
+                  yKey: parsedData.yKey,
+                  nameKey: parsedData.xKey,
+                  valueKey: parsedData.yKey,
+                }
+                newMessage.chartData = chartData;
+                updatedMessages.push(newMessage);
+              } else {
+                const newMessage: Message = {
+                  id: _streamMessageId,
+                  text: data,
+                  sender: 'bot',
+                  timestamp: new Date()
+                };
+                updatedMessages.push(newMessage);
+              }
+
             } else {
               updatedMessages[messageIndex] = {
                 ...updatedMessages[messageIndex],
-                text: data,
+                text: isJsonObjectData ? chartMessage : data,
                 timestamp: new Date()
               };
             }
@@ -160,14 +197,24 @@ const ChatContainer: React.FC = () => {
       );
     } catch (error) {
       console.warn('MCP server not available, using fallback response:', error);
-      
-      // Fallback to simulated response
+        // Fallback to simulated response
       setTimeout(() => {
+        // Check if the message is requesting a chart
+        const chartData = parseChartCommand(messageText);
+        
+        let responseText = 'I can help you with data visualization! Try typing:\n\n';
+        responseText += '• [chart:pie] - for pie charts\n';
+        responseText += '• [chart:bar] - for bar charts\n';
+        responseText += '• [chart:line] - for line charts\n';
+        responseText += '• [chart:scatter] - for scatter plots\n\n';
+        responseText += 'Or ask any other question!';
+
         const botResponse: Message = {
           id: generateId(),
-          text: 'MCP server not available',
+          text: responseText,
           sender: 'bot',
-          timestamp: new Date()
+          timestamp: new Date(),
+          chartData: chartData || undefined
         };
 
         setAppState(prev => ({

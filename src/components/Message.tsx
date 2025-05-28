@@ -4,6 +4,7 @@ import { User, Bot } from 'lucide-react';
 import { clsx } from 'clsx';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import Chart from './Chart';
 import './Message.css';
 
 interface MessageProps {
@@ -34,7 +35,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         ) : (
           <Bot size={20} />
         )}
-      </div>
+      </div>      
       <div className="message-content">
         <div className="message-text">
           {message.isTyping ? (
@@ -64,6 +65,9 @@ const Message: React.FC<MessageProps> = ({ message }) => {
             </ReactMarkdown>
           )}
         </div>
+        {message.chartData && (
+          <Chart chartData={message.chartData} />
+        )}
         <div className="message-timestamp">
           {formatDateTime(message.timestamp)}
         </div>

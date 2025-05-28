@@ -1,9 +1,25 @@
+export interface ChartDataPoint {
+  [key: string]: string | number;
+}
+
+export interface ChartData {
+  type: 'pie' | 'bar' | 'line' | 'scatter';
+  title?: string;
+  data: ChartDataPoint[];
+  xKey?: string;
+  yKey?: string;
+  nameKey?: string;
+  valueKey?: string;
+  description?: string;
+}
+
 export interface Message {
   id: string;
   text: string;
   sender: 'user' | 'bot';
   timestamp: Date;
   isTyping?: boolean;
+  chartData?: ChartData;
 }
 
 export interface ChatState {

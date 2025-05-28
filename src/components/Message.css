@@ -35,6 +35,16 @@
   flex-direction: column;
 }
 
+/* Expand width for messages with charts */
+.message-content:has(.chart-container) {
+  width: 100%;
+}
+
+/* Fallback for browsers that don't support :has() */
+.message-content-with-chart {
+  width: 100%;
+}
+
 /* Remove the special width handling for tables - keep consistent width */
 /* .message-content:has(.table-container) {
   max-width: 90%;
