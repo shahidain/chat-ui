@@ -26,7 +26,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading = false }
         <div className="empty-state">
           <div className="empty-state-icon">💬</div>
           <h3>Start a conversation</h3>
-          <p>Send a message to begin your chat session</p>
+          <p>Smart data exploration through conversation</p>
         </div>
       </div>
     );

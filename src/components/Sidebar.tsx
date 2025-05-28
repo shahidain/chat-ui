@@ -135,8 +135,8 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         <div className="sidebar-footer">
           <div className="app-info">
-            <span style={{fontSize: "14px", color:"#000"}}>JPMC AI Chat UI</span>
-            <div style={{fontSize: "11px", color:"#000"}}>Version: 1.0.1 &copy; 2025 JP Morgan Chase & Co.</div>
+            <span style={{fontSize: "14px", color:"#000"}}>Infobyte AI</span>
+            <div style={{fontSize: "11px", color:"#000"}}>Version: 1.0.1 &copy; 2025 Infobyte Tech Solutions</div>
           </div>
         </div>
       </aside>

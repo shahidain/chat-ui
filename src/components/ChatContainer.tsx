@@ -242,16 +242,9 @@ const ChatContainer: React.FC = () => {
               <Menu size={20} />
             </button>
             <div className="chat-icon">
-              <img src="/public/JPMC.jpg" alt="Chat Icon" className="chat-icon-image" style={{height: "50px"}} />
+              <img src="/public/infobyte.svg" alt="Chat Icon" className="chat-icon-image"/>
             </div>
-            <div className="chat-info">
-              <h1 className="chat-title">
-                {'JP Morgan Chase'}
-              </h1>
-              <p className="chat-subtitle">
-                {'Data By AI Assistant Chat'}
-              </p>
-            </div>
+            
           </div>
           <div className="chat-header-right">
             <div className="connection-status">
