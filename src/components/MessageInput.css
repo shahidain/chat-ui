@@ -5,6 +5,8 @@
   position: sticky;
   bottom: 0;
   z-index: 10;
+  padding-left: 15%;
+  padding-right: 15%;
 }
 
 .message-input-form {

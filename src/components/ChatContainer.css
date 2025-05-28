@@ -124,6 +124,7 @@
   overflow: hidden;
   height: 100%;
   min-height: 0;
+  background: #e9ecef;
 }
 
 .chat-footer {
