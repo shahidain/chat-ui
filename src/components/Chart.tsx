@@ -38,19 +38,25 @@ const COLORS = [
 
 const Chart: React.FC<ChartProps> = ({ chartData }) => {
   const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+  
+  const getPieRadius = () => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768 ? 80 : 130;
+    }
+    return 130;
+  };
 
   const renderChart = () => {
-    switch (type) {
-      case 'pie':
+    switch (type) {      case 'pie':
         return (
           <PieChart width={400} height={300}>
             <Pie
               data={data}
-              cx={200}
-              cy={150}
+              cx="50%"
+              cy="50%"
               labelLine={false}
               label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-              outerRadius={80}
+              outerRadius={getPieRadius()}
               fill="#8884d8"
               dataKey={valueKey || 'value'}
               nameKey={nameKey || 'name'}
@@ -62,9 +68,7 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
             <Tooltip />
             <Legend />
           </PieChart>
-        );
-
-      case 'bar':
+        );      case 'bar':
         return (
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -72,7 +76,11 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey={yKey || 'value'} fill="rgb(0, 85, 170)" />
+            <Bar dataKey={yKey || 'value'}>
+              {data.map((_entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Bar>
           </BarChart>
         );
 

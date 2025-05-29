@@ -60,7 +60,7 @@ function connectToSSEStream(handleChatUpdate: (data: string) => void) {
     // Handle errors
     eventSource.onerror = function(error) {
       console.warn("SSE connection error, running in offline mode:", error);
-      eventSource.close();
+      handleChatUpdate("false");
     };
     
     return eventSource;
@@ -82,7 +82,9 @@ export async function sendMessage(sessionId: string, message: string, handleChat
     });
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      console.error(`HTTP error! status: ${response.status}`);
+      handleChatUpdate(`Error: ${response.statusText}`, true);
+      return;
     }
     
     const reader = response.body?.getReader();

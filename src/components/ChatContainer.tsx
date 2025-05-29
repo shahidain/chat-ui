@@ -7,7 +7,6 @@ import { Menu, RadioIcon } from 'lucide-react';
 import { clsx } from 'clsx';
 import './ChatContainer.css';
 import { sendMessage, connectToServer } from '../mcp-server/connection';
-import { parseChartCommand } from '../utils/chartUtils';
 
 
 const ChatContainer: React.FC = () => {
@@ -36,9 +35,33 @@ const ChatContainer: React.FC = () => {
     }
   };
 
+  const handleNoConnection = useCallback((sessionId: string) => {
+    setTimeout(()=>{
+      setAppState(prev => ({
+        ...prev,
+        sessions: prev.sessions.map(session => {
+          if (session.id === sessionId) {
+            return {
+              ...session,
+              messages: [...session.messages, {
+                id: generateId(),
+                text: 'MCP server is not available.',
+                sender: 'bot',
+                timestamp: new Date()
+              }]
+            };
+          }
+          return session;
+        })
+      }));
+      setIsLoading(false);
+      setIsConnected(false);
+    }, 1000 + Math.random() * 2000);
+  }, []);
+
   const handleMCPSerVerMessgeResponse = useCallback((sessionId: string, data: string, done: boolean, _streamMessageId: string | null) => {
     const isJsonObjectData: boolean = isJsonObject(data);
-    const chartMessage = '#### Here is your requested chart';
+    const chartMessage = '### Here is your requested chart';
     setAppState(prev => ({
       ...prev,
       sessions: prev.sessions.map(session => {
@@ -50,7 +73,6 @@ const ChatContainer: React.FC = () => {
               
               if (isJsonObjectData) { 
                 const parsedData = JSON.parse(data);
-                console.log('Received JSON data from MCP server:', parsedData);
                 const newMessage: Message = {
                   id: _streamMessageId,
                   text: chartMessage,
@@ -71,7 +93,7 @@ const ChatContainer: React.FC = () => {
               } else {
                 const newMessage: Message = {
                   id: _streamMessageId,
-                  text: data,
+                  text: data || 'No response from server',
                   sender: 'bot',
                   timestamp: new Date()
                 };
@@ -81,7 +103,7 @@ const ChatContainer: React.FC = () => {
             } else {
               updatedMessages[messageIndex] = {
                 ...updatedMessages[messageIndex],
-                text: isJsonObjectData ? chartMessage : data,
+                text: isJsonObjectData ? chartMessage : data || 'No response from server',
                 timestamp: new Date()
               };
             }
@@ -191,6 +213,10 @@ const ChatContainer: React.FC = () => {
     setIsLoading(true);
     
     try {
+      if (!isConnected) {
+        handleNoConnection(sessionId!);
+        return;
+      }
       sendMessage(
         sessionId,
         messageText,
@@ -198,45 +224,10 @@ const ChatContainer: React.FC = () => {
       );
     } catch (error) {
       console.warn('MCP server not available, using fallback response:', error);
-        // Fallback to simulated response
-      setTimeout(() => {
-        // Check if the message is requesting a chart
-        const chartData = parseChartCommand(messageText);
-        
-        let responseText = 'I can help you with data visualization! Try typing:\n\n';
-        responseText += '• [chart:pie] - for pie charts\n';
-        responseText += '• [chart:bar] - for bar charts\n';
-        responseText += '• [chart:line] - for line charts\n';
-        responseText += '• [chart:scatter] - for scatter plots\n\n';
-        responseText += 'Or ask any other question!';
-
-        const botResponse: Message = {
-          id: generateId(),
-          text: responseText,
-          sender: 'bot',
-          timestamp: new Date(),
-          chartData: chartData || undefined
-        };
-
-        setAppState(prev => ({
-          ...prev,
-          sessions: prev.sessions.map(session => {
-            if (session.id === sessionId) {
-              return {
-                ...session,
-                messages: [...session.messages, botResponse],
-                lastActivity: new Date()
-              };
-            }
-            return session;
-          })
-        }));
-        
-        setIsLoading(false);
-      }, 1000 + Math.random() * 2000); // Random delay between 1-3 seconds
+      handleNoConnection(sessionId!);
     }
 
-  }, [appState.currentSessionId, createNewSession, handleMCPSerVerMessgeResponse]);
+  }, [appState.currentSessionId, createNewSession, handleMCPSerVerMessgeResponse, handleNoConnection, isConnected]);
 
   const getCurrentSession = (): ChatSession | null => {
     return appState.sessions.find(s => s.id === appState.currentSessionId) || null;
@@ -245,8 +236,8 @@ const ChatContainer: React.FC = () => {
   const currentSession = getCurrentSession();
 
   const handleMessageResponse = (data: unknown) => {
-    if (typeof data === 'string' && data === 'true') {
-      setIsConnected(true);
+    if (typeof data === 'string') {
+      setIsConnected(data === 'true');
       return;
     }
   };

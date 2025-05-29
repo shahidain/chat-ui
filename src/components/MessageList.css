@@ -124,3 +124,15 @@
     padding-right: 10px;
   }
 }
+
+/* iPad Mini landscape orientation - remove horizontal padding */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: landscape)
+  and (-webkit-min-device-pixel-ratio: 1) {
+  .message-list-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
