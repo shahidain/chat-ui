@@ -228,6 +228,13 @@
   white-space: nowrap;
 }
 
+/* Hide status text on mobile and tablet devices */
+@media (max-width: 768px) {
+  .status-text {
+    display: none !important;
+  }
+}
+
 .status-icon-wrapper {
   display: flex;
   align-items: center;
@@ -296,14 +303,10 @@
     justify-content: center;
     align-items: center;
   }
-  
-  .status-icon.connected-icon,
+    .status-icon.connected-icon,
   .status-icon.disconnected-icon {
     width: 18px;
     height: 18px;
-  }
-    .status-text {
-    display: none; /* Hide text on very small screens, show only icon */
   }
   
   .chat-container {
@@ -353,24 +356,15 @@
 }
 
 /* Show status text on larger mobile screens */
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 769px) {
   .status-text {
-    display: inline;
-    font-size: 12px;
+    display: inline !important;
   }
   
   .status-indicator {
-    padding: 8px 12px;
-    min-height: 36px;
-    border-radius: 20px; /* Keep pill shape when text is visible */
-  }
-  
-  /* When text is hidden, make it circular */
-  .status-indicator:not(:has(.status-text:not([style*="display: none"]))) {
-    width: 40px;
-    height: 40px;
-    border-radius: 50% !important;
-    padding: 0;
-    justify-content: center;
+    padding: 6px 12px;
+    min-height: 32px;
+    border-radius: 20px;
+    gap: 8px;
   }
 }
