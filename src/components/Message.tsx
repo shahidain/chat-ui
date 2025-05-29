@@ -4,6 +4,8 @@ import { User, Bot } from 'lucide-react';
 import { clsx } from 'clsx';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import Chart from './Chart';
 import './Message.css';
 
@@ -48,6 +50,49 @@ const Message: React.FC<MessageProps> = ({ message }) => {
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               components={{
+                code: ({ className, children }) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  const language = match ? match[1] : '';
+                  const isCodeBlock = match && className?.includes('language-');                  if (isCodeBlock) {
+                    return (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus}
+                        language={language}
+                        PreTag="div"
+                        customStyle={{
+                          margin: '0 0',
+                          borderRadius: '8px',
+                          fontSize: '14px',
+                          lineHeight: '1.75',
+                          maxWidth: '100%',
+                          overflow: 'auto',
+                          fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                          backgroundColor: '#1e1e1e',
+                          border: '1px solid #333',
+                          padding: '16px'
+                        }}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    );
+                  }                  // Inline code
+                  return (
+                    <code 
+                      className={className}
+                      style={{
+                        backgroundColor: '#2d2d30',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        fontSize: '0.9em',
+                        fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                        color: '#9cdcfe',
+                        border: '1px solid #464647'
+                      }}
+                    >
+                      {children}
+                    </code>
+                  );
+                },
                 table: ({ children, ...props }) => (
                   <div className="table-container">
                     <table {...props}>{children}</table>
