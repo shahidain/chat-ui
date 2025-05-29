@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ChatSession } from '../types/chat';
-import { Plus, MessageSquare, Trash2, Menu, X } from 'lucide-react';
+import { Plus, MessageSquare, Trash2 } from 'lucide-react';
 import { clsx } from 'clsx';
 import './Sidebar.css';
 
@@ -61,13 +61,6 @@ const Sidebar: React.FC<SidebarProps> = ({
       {/* Sidebar */}
       <aside className={clsx('sidebar', isOpen && 'sidebar-open')}>
         <div className="sidebar-header">
-          <button
-            className="sidebar-toggle-btn"
-            onClick={onToggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            {isOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
           <button
             className="new-chat-btn"
             onClick={onNewChat}

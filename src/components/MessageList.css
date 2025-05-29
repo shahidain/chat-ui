@@ -111,4 +111,16 @@
   .empty-state p {
     font-size: 14px;
   }
+
+  .message-list-container {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+@media (max-width: 820px) {
+  .message-list-container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }

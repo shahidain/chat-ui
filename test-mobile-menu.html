@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Test</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .test-container {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-button {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            color: #6c757d;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            z-index: 1002;
+            position: relative;
+            flex-shrink: 0;
+            margin: 0;
+            padding: 0;
+            border: 2px solid blue;
+        }
+        
+        @media (max-width: 768px) {
+            .test-button {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
+                transform: none !important;
+                background: rgba(0, 85, 170, 0.1) !important;
+            }
+        }
+        
+        .device-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Mobile Menu Button Test</h1>
+        
+        <div class="device-info">
+            <h3>Device Information:</h3>
+            <p>Screen Width: <span id="screenWidth"></span>px</p>
+            <p>Window Width: <span id="windowWidth"></span>px</p>
+            <p>User Agent: <span id="userAgent"></span></p>
+            <p>Is Mobile View: <span id="isMobile"></span></p>
+        </div>
+        
+        <div>
+            <h3>Test Button (Should be visible on mobile/small screens):</h3>
+            <button class="test-button" onclick="testButtonClick()">
+                ☰
+            </button>
+            <div id="buttonStatus" class="status"></div>
+        </div>
+        
+        <div>
+            <h3>Instructions:</h3>
+            <ul>
+                <li>On desktop (width > 768px): Button should be hidden</li>
+                <li>On mobile/tablet (width ≤ 768px): Button should be visible with blue border and light blue background</li>
+                <li>Click the button to test functionality</li>
+                <li>Resize the browser window to test responsive behavior</li>
+            </ul>
+        </div>
+        
+        <div>
+            <h3>CSS Media Query Test:</h3>
+            <div id="mediaQueryTest" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateDeviceInfo() {
+            document.getElementById('screenWidth').textContent = screen.width;
+            document.getElementById('windowWidth').textContent = window.innerWidth;
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            document.getElementById('isMobile').textContent = window.innerWidth <= 768 ? 'YES' : 'NO';
+            
+            // Test if button is visible
+            const button = document.querySelector('.test-button');
+            const buttonStyle = window.getComputedStyle(button);
+            const isVisible = buttonStyle.display !== 'none';
+            const isMobileWidth = window.innerWidth <= 768;
+            
+            const statusEl = document.getElementById('buttonStatus');
+            if (isMobileWidth && isVisible) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '✓ Button is correctly visible on mobile';
+            } else if (!isMobileWidth && !isVisible) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '✓ Button is correctly hidden on desktop';
+            } else if (isMobileWidth && !isVisible) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '✗ ERROR: Button should be visible on mobile but is hidden';
+            } else {
+                statusEl.className = 'status error';
+                statusEl.textContent = '✗ ERROR: Button should be hidden on desktop but is visible';
+            }
+            
+            // Test media query
+            const mediaQueryEl = document.getElementById('mediaQueryTest');
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                mediaQueryEl.className = 'status success';
+                mediaQueryEl.textContent = '✓ Media query (max-width: 768px) matches';
+            } else {
+                mediaQueryEl.className = 'status success';
+                mediaQueryEl.textContent = '✓ Media query (max-width: 768px) does not match';
+            }
+        }
+        
+        function testButtonClick() {
+            alert('Mobile menu button clicked successfully!');
+        }
+        
+        // Initial load
+        updateDeviceInfo();
+        
+        // Update on window resize
+        window.addEventListener('resize', updateDeviceInfo);
+        
+        // Update every second for real-time testing
+        setInterval(updateDeviceInfo, 1000);
+    </script>
+</body>
+</html>

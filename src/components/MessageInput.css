@@ -156,7 +156,8 @@
   .message-input-container {
     padding: 10px 12px;
   }
-    .attachment-button,
+  
+  .attachment-button,
   .voice-button,
   .send-button {
     width: 28px;
@@ -172,5 +173,12 @@
   
   .message-textarea {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 820px) {
+  .message-input-container {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }

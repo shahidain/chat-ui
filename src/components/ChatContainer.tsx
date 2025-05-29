@@ -38,7 +38,7 @@ const ChatContainer: React.FC = () => {
 
   const handleMCPSerVerMessgeResponse = useCallback((sessionId: string, data: string, done: boolean, _streamMessageId: string | null) => {
     const isJsonObjectData: boolean = isJsonObject(data);
-    const chartMessage = '**Here is your requested chart**';
+    const chartMessage = '#### Here is your requested chart';
     setAppState(prev => ({
       ...prev,
       sessions: prev.sessions.map(session => {
@@ -114,7 +114,8 @@ const ChatContainer: React.FC = () => {
     setAppState(prev => ({
       ...prev,
       sessions: [newSession, ...prev.sessions],
-      currentSessionId: newSession.id
+      currentSessionId: newSession.id,
+      sidebarOpen: false // Close sidebar on mobile when starting new chat
     }));
   }, [createNewSession]);
 
@@ -280,13 +281,12 @@ const ChatContainer: React.FC = () => {
 
       <div className="chat-container">
         <header className="chat-header">
-          <div className="chat-header-left">
-            <button
+          <div className="chat-header-left">            <button
               className="mobile-menu-btn"
               onClick={handleToggleSidebar}
               aria-label="Toggle sidebar"
             >
-              <Menu size={20} />
+            <Menu size={20} />
             </button>
             <div className="chat-icon">
               <img src="/public/infobyte.svg" alt="Chat Icon" className="chat-icon-image"/>
