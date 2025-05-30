@@ -140,6 +140,41 @@
   border: 1px solid #e9ecef;
   width: 100%;
   max-width: 100%;
+  transition: box-shadow 0.3s ease;
+  /* Show thin scrollbar rail for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: transparent rgba(0, 0, 0, 0.05);
+}
+
+/* Webkit scrollbar - always show track/rail, hide thumb initially */
+.table-container::-webkit-scrollbar {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.05); /* Always visible track */
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05); /* Always visible rail */
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: transparent; /* Hidden by default */
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+/* Show/enhance scrollbar thumb on hover */
+.table-container:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  scrollbar-color: rgba(193, 199, 208, 0.7) rgba(0, 0, 0, 0.05); /* Firefox thumb appears */
+}
+
+.table-container:hover::-webkit-scrollbar-thumb {
+  background: rgba(193, 199, 208, 0.7); /* Webkit thumb appears */
+}
+
+.table-container:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(160, 168, 176, 0.9); /* Darker on direct thumb hover */
 }
 
 .message-text table {

@@ -63,7 +63,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                           margin: '0 0',
                           borderRadius: '8px',
                           fontSize: '14px',
-                          lineHeight: '1.75',
+                          lineHeight: '0',
                           maxWidth: '100%',
                           overflow: 'auto',
                           fontFamily: 'Consolas, Monaco, "Courier New", monospace',
@@ -75,7 +75,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                         {String(children).replace(/\n$/, '')}
                       </SyntaxHighlighter>
                     );
-                  }                  // Inline code
+                  }
                   return (
                     <code 
                       className={className}
