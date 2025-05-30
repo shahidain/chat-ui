@@ -113,9 +113,11 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         {message.chartData && (
           <Chart chartData={message.chartData} />
         )}
-        <div className="message-timestamp">
-          {formatDateTime(message.timestamp)}
-        </div>
+        {!message.isTyping && (
+           <div className="message-timestamp">
+            {formatDateTime(message.timestamp)}
+          </div>
+        )}
       </div>
     </div>
   );
