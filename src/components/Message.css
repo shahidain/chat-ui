@@ -306,6 +306,37 @@
   font-style: italic;
 }
 
+/* Image styles for markdown content */
+.message-image-bot,
+.message-image-user {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: block;
+}
+
+/* Mobile responsive adjustments for images */
+@media (max-width: 768px) {
+  .message-image-bot,
+  .message-image-user {
+    max-width: 150px;
+  }
+}
+
+/* Animation for slide in effect */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .message-content {
     max-width: 90%;
