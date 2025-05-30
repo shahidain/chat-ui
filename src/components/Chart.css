@@ -5,6 +5,7 @@
   border-radius: 12px;
   border: 1px solid #e9ecef;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0px;
 }
 
 .chart-title {
@@ -28,6 +29,7 @@
   .chart-container {
     margin: 12px 0;
     padding: 12px;
+    margin-bottom: 0px;
   }
   
   .chart-wrapper {
@@ -44,6 +46,7 @@
   .chart-container {
     margin: 8px 0;
     padding: 8px;
+    margin-bottom: 0px;
   }
   
   .chart-wrapper {

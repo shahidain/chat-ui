@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import type { Message, ChatSession, AppState, ChartData } from '../types/chat';
+import type { Message, ChatSession, AppState, ChartData, ChartDataResponse } from '../types/chat';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import Sidebar from './Sidebar';
@@ -61,7 +61,10 @@ const ChatContainer: React.FC = () => {
 
   const handleMCPSerVerMessgeResponse = useCallback((sessionId: string, data: string, done: boolean, _streamMessageId: string | null) => {
     const isJsonObjectData: boolean = isJsonObject(data);
-    const chartMessage = '### Here is your requested chart';
+    let parsedData: ChartDataResponse = {} as ChartDataResponse;
+    if (isJsonObjectData)
+      parsedData = JSON.parse(data) as ChartDataResponse;
+    const chartMessage = `### Here is your requested chart\n${parsedData?.analysis}`;
     setAppState(prev => ({
       ...prev,
       sessions: prev.sessions.map(session => {
@@ -71,8 +74,7 @@ const ChatContainer: React.FC = () => {
             const messageIndex = updatedMessages.findIndex(msg => msg.id === _streamMessageId);
             if (messageIndex === -1) {
               
-              if (isJsonObjectData) { 
-                const parsedData = JSON.parse(data);
+              if (isJsonObjectData) {
                 const newMessage: Message = {
                   id: _streamMessageId,
                   text: chartMessage,
@@ -80,13 +82,13 @@ const ChatContainer: React.FC = () => {
                   timestamp: new Date()
                 };
                 const chartData: ChartData = {
-                  type: parsedData.chart_type,
-                  title: parsedData.chart_title || 'Chart',
-                  data: parsedData.chart_data,
-                  xKey: parsedData.xKey,
-                  yKey: parsedData.yKey,
-                  nameKey: parsedData.xKey,
-                  valueKey: parsedData.yKey,
+                  type: parsedData?.type || 'bar',
+                  title: parsedData?.title || 'Chart',
+                  data: parsedData?.data,
+                  xKey: parsedData?.xKey,
+                  yKey: parsedData?.yKey,
+                  nameKey: parsedData?.xKey,
+                  valueKey: parsedData?.yKey,
                 }
                 newMessage.chartData = chartData;
                 updatedMessages.push(newMessage);

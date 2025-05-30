@@ -47,3 +47,13 @@ export interface AppState {
   currentSessionId: string | null;
   sidebarOpen: boolean;
 }
+
+export interface ChartDataResponse {
+  type: 'pie' | 'bar' | 'line' | 'scatter';
+  data: [];
+  title?: string;
+  xKey?: string;
+  yKey?: string;
+  description?: string;
+  analysis?: string;
+}

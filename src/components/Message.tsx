@@ -18,8 +18,8 @@ const Message: React.FC<MessageProps> = ({ message }) => {
   
   const formatDateTime = (date: Date): string => {
     const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
-    const year = date.getFullYear().toString().slice(-2);
+    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const year = date.getFullYear().toString().slice(-4);
     const time = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -93,6 +93,14 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                     </code>
                   );
                 },
+                img: ({ src, alt, ...props }) => (
+                  <img
+                    src={src}
+                    alt={alt}
+                    className={isUser ? 'message-image-user' : 'message-image-bot'}
+                    {...props}
+                  />
+                ),
                 table: ({ children, ...props }) => (
                   <div className="table-container">
                     <table {...props}>{children}</table>
