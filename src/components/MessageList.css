@@ -66,6 +66,21 @@
   opacity: 0.8;
 }
 
+/* Avatar image styling for bot messages */
+img[alt*="avatar" i],
+img[src*="avatar" i],
+img[class*="avatar" i],
+img[id*="avatar" i],
+img[data-testid*="avatar" i],
+img[title*="avatar" i] {
+  max-width: 50px;
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
 /* Custom scrollbar */
 .message-list-container::-webkit-scrollbar {
   width: 6px;
