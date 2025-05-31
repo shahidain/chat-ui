@@ -136,3 +136,51 @@
     padding-right: 0 !important;
   }
 }
+
+/* iPad Pro 11" - both orientations */
+@media only screen 
+  and (min-device-width: 834px) 
+  and (max-device-width: 1194px) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+  .message-list-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* iPad Pro 12.9" - both orientations */
+@media only screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1366px) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+  .message-list-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* iPad Pro 11" (2021+) with M1 chip - both orientations */
+@media only screen 
+  and (min-device-width: 834px) 
+  and (max-device-width: 1194px) 
+  and (-webkit-min-device-pixel-ratio: 2) 
+  and (hover: none) 
+  and (pointer: coarse) {
+  .message-list-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* iPad Pro 12.9" (2021+) with M1 chip - both orientations */
+@media only screen 
+  and (min-device-width: 1024px) 
+  and (max-device-width: 1366px) 
+  and (-webkit-min-device-pixel-ratio: 2) 
+  and (hover: none) 
+  and (pointer: coarse) {
+  .message-list-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
