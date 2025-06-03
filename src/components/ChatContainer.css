@@ -274,10 +274,10 @@
     min-height: 56px;
   }
   
-  .chat-icon {
+  /*.chat-icon {
     width: 80px;
     height: 40px;
-  }
+  }*/
   
   .chat-icon svg {
     width: 20px;
@@ -367,4 +367,8 @@
     border-radius: 20px;
     gap: 8px;
   }
+}
+
+.chat-icon-image {
+  height: 50px;
 }
