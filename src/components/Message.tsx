@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Message as MessageType } from '../types/chat';
-import { User, Bot } from 'lucide-react';
+import { User, Bot, Copy } from 'lucide-react';
 import { clsx } from 'clsx';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -15,10 +15,34 @@ interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message }) => {
   const isUser = message.sender === 'user';
+  const [isCopied, setIsCopied] = React.useState(false);
+  const [showHoverTooltip, setShowHoverTooltip] = React.useState(false);
+  
+  const handleCopyMessage = async () => {
+    try {
+      await navigator.clipboard.writeText(message.text);
+      setIsCopied(true);
+      setShowHoverTooltip(false); // Hide hover tooltip on click
+      // Reset the copied state after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy message:', err);
+    }
+  };
+
+  const handleMouseEnter = () => {
+    if (!isCopied) {
+      setShowHoverTooltip(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowHoverTooltip(false);
+  };
   
   const formatDateTime = (date: Date): string => {
     const day = date.getDate().toString().padStart(2, '0');
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
+    const month = date.toLocaleDateString('en-US', { month: 'long' });
     const year = date.getFullYear().toString().slice(-4);
     const time = date.toLocaleTimeString('en-US', {
       hour: '2-digit',
@@ -120,9 +144,21 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         </div>
         {message.chartData && (
           <Chart chartData={message.chartData} />
-        )}
-        {!message.isTyping && (
+        )}        {!message.isTyping && (
            <div className="message-timestamp">
+            {isUser && (
+              <div className="copy-icon-container">
+                <Copy 
+                  size={12} 
+                  className={`copy-icon ${isCopied ? 'copy-icon-copied' : ''}`}
+                  onClick={handleCopyMessage}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                />
+                {showHoverTooltip && <span className="copy-tooltip-hover">Copy Message</span>}
+                {isCopied && <span className="copy-tooltip">Copied!</span>}
+              </div>
+            )}
             {formatDateTime(message.timestamp)}
           </div>
         )}

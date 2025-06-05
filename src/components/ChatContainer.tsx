@@ -28,7 +28,7 @@ const ChatContainer: React.FC = () => {
   const isJsonObject = (str: string): boolean => {
     try {
       const parsed = JSON.parse(str);
-      return typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed);
+      return typeof parsed === 'object' && parsed !== null;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (exception) {
       return false;

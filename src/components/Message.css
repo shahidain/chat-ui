@@ -83,14 +83,108 @@
   color: #868e96;
   margin-top: 4px;
   padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .message-user .message-timestamp {
   text-align: right;
+  justify-content: flex-end;
 }
 
 .message-bot .message-timestamp {
   text-align: left;
+  justify-content: flex-start;
+}
+
+.copy-icon {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: #868e96;
+}
+
+.copy-icon:hover {
+  opacity: 1;
+  color: #007acc;
+}
+
+.copy-icon-copied {
+  opacity: 1;
+  color: #28a745 !important;
+  transform: scale(1.1);
+}
+
+.copy-icon-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.copy-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  animation: fadeInOut 2s ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.copy-tooltip-hover {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #666;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  white-space: nowrap;
+  animation: fadeInOutHover 1s ease-in-out;
+  pointer-events: none;
+  z-index: 10;
+}
+
+
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  20%, 80% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+@keyframes fadeInOutHover {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
+  15%, 85% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
+  }
 }
 
 .typing-indicator {
