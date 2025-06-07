@@ -282,7 +282,7 @@ const ChatContainer: React.FC = () => {
             <Menu size={20} />
             </button>
             <div className="chat-icon">
-              <img src="/public/infobyte.svg" alt="Chat Icon" className="chat-icon-image"/>
+              <img src="/infobyte.svg" alt="Chat Icon" className="chat-icon-image"/>
             </div>
             
           </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import type { Message as MessageType } from '../types/chat';
+import StartChatIcon from './StartChatIcon';
 import Message from './Message';
 import './MessageList.css';
 
@@ -24,7 +25,9 @@ const MessageList: React.FC<MessageListProps> = ({ messages, isLoading = false }
     return (
       <div className="message-list-container">
         <div className="empty-state">
-          <div className="empty-state-icon">💬</div>
+          <div className="empty-state-icon">
+            <StartChatIcon />
+          </div>
           <h3>Start a conversation</h3>
           <p>Smart data exploration through conversation</p>
         </div>
