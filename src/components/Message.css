@@ -428,10 +428,6 @@
 }
 
 @media (max-width: 768px) {
-  .message-content {
-    max-width: 90%;
-  }
-  
   .message-avatar {
     width: 32px;
     height: 32px;
