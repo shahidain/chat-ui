@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   PieChart,
   Pie,
@@ -36,8 +36,19 @@ const COLORS = [
   '#F7DC6F'
 ];
 
+// Helper function to get a random color from the COLORS array
+const getRandomColor = (): string => {
+  const randomIndex = Math.floor(Math.random() * COLORS.length);
+  return COLORS[randomIndex];
+};
+
 const Chart: React.FC<ChartProps> = ({ chartData }) => {
   const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+  
+  // Memoize random colors so they remain consistent between renders
+  const randomBarColors = useMemo(() => {
+    return data.map(() => getRandomColor());
+  }, [data]);
   
   const getPieRadius = () => {
     if (typeof window !== 'undefined') {
@@ -77,8 +88,8 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
             <Tooltip />
             <Legend />
             <Bar dataKey={yKey || 'value'}>
-              {data.map((_entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              {randomBarColors.map((color, index) => (
+                <Cell key={`cell-${index}`} fill={color} />
               ))}
             </Bar>
           </BarChart>
