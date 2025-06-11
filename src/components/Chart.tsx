@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   PieChart,
   Pie,
@@ -32,23 +32,13 @@ const COLORS = [
   '#96CEB4',
   '#FFEAA7',
   '#DDA0DD',
-  '#98D8C8',
-  '#F7DC6F'
+  '#98D8C8',  '#F7DC6F'
 ];
 
-// Helper function to get a random color from the COLORS array
-const getRandomColor = (): string => {
-  const randomIndex = Math.floor(Math.random() * COLORS.length);
-  return COLORS[randomIndex];
-};
-
-const Chart: React.FC<ChartProps> = ({ chartData }) => {
-  const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
   
-  // Memoize random colors so they remain consistent between renders
-  const randomBarColors = useMemo(() => {
-    return data.map(() => getRandomColor());
-  }, [data]);
+  // We won't use randomized colors anymore
+  // Instead we'll use sequential colors from the COLORS array
   
   const getPieRadius = () => {
     if (typeof window !== 'undefined') {
@@ -83,13 +73,12 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
         return (
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xKey || 'name'} />
-            <YAxis />
+            <XAxis dataKey={xKey || 'name'} />            <YAxis />
             <Tooltip />
             <Legend />
             <Bar dataKey={yKey || 'value'}>
-              {randomBarColors.map((color, index) => (
-                <Cell key={`cell-${index}`} fill={color} />
+              {data.map((_entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Bar>
           </BarChart>
