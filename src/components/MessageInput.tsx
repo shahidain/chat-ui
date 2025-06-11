@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { Send, Paperclip, Mic } from 'lucide-react';
 import './MessageInput.css';
 
@@ -8,16 +8,29 @@ interface MessageInputProps {
   placeholder?: string;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({
+export interface MessageInputHandle {
+  focus: () => void;
+}
+
+const MessageInput = forwardRef<MessageInputHandle, MessageInputProps>(({
   onSendMessage,
   disabled = false,
   placeholder = "Type your message..."
-}) => {
+}, ref) => {
   const [message, setMessage] = useState('');
   const [messageHistory, setMessageHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [currentDraft, setCurrentDraft] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);  const handleSubmit = (e: React.FormEvent) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Expose focus method via ref
+  useImperativeHandle(ref, () => ({
+    focus: () => {
+      textareaRef.current?.focus();
+    }
+  }));
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim() && !disabled) {
       const trimmedMessage = message.trim();
@@ -38,7 +51,9 @@ const MessageInput: React.FC<MessageInputProps> = ({
         textareaRef.current.focus();
       }
     }
-  };const handleKeyPress = (e: React.KeyboardEvent) => {
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
@@ -52,8 +67,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       navigateHistory('down');
-    }
-  };
+    }  };
+
   const navigateHistory = (direction: 'up' | 'down') => {
     if (messageHistory.length === 0) return;
 
@@ -86,8 +101,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
         textareaRef.current.style.height = 'auto';
         textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
       }
-    }, 0);
-  };
+    }, 0);  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.target.value;
     setMessage(newValue);
@@ -102,13 +117,16 @@ const MessageInput: React.FC<MessageInputProps> = ({
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
-    }
-  };
+    }  };
+
   useEffect(() => {
+    // Focus on initial mount
     if (textareaRef.current) {
       textareaRef.current.focus();
     }
-  }, []);  return (
+  }, []); // Empty dependency array means this runs once on mount
+
+  return (
     <div className="message-input-container">
       <form onSubmit={handleSubmit} className="message-input-form">
         <div className="message-input-wrapper">
@@ -150,9 +168,8 @@ const MessageInput: React.FC<MessageInputProps> = ({
             <Send size={20} />
           </button>
         </div>
-      </form>
-    </div>
+      </form>    </div>
   );
-};
+});
 
 export default MessageInput;

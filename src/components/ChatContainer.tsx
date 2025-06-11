@@ -1,5 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import type { Message, ChatSession, AppState, ChartData, ChartDataResponse } from '../types/chat';
+import type { MessageInputHandle } from './MessageInput';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 import Sidebar from './Sidebar';
@@ -18,6 +19,7 @@ const ChatContainer: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const inputRef = useRef<MessageInputHandle>(null);
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
   const generateChatTitle = (firstMessage: string): string => {
@@ -132,7 +134,6 @@ const ChatContainer: React.FC = () => {
       createdAt: now
     };
   }, []);
-
   const handleNewChat = useCallback(() => {
     const newSession = createNewSession();
     setAppState(prev => ({
@@ -141,6 +142,11 @@ const ChatContainer: React.FC = () => {
       currentSessionId: newSession.id,
       sidebarOpen: false // Close sidebar on mobile when starting new chat
     }));
+    
+    // Focus the input field after creating a new chat
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100); // Small delay to ensure DOM is updated
   }, [createNewSession]);
 
   const handleSessionSelect = useCallback((sessionId: string) => {
@@ -314,10 +320,9 @@ const ChatContainer: React.FC = () => {
             messages={currentSession?.messages || []} 
             isLoading={isLoading}
           />
-        </main>
-
-        <footer className="chat-footer">
+        </main>        <footer className="chat-footer">
           <MessageInput
+            ref={inputRef}
             onSendMessage={handleSendMessage}
             disabled={isLoading}
             placeholder="Type your message..."
