@@ -286,7 +286,7 @@ const ChatContainer: React.FC = () => {
             </div>
             <div className="chat-info">
               <h1 className="chat-title">Global Hackathon 2025</h1>
-              <p className="chat-subtitle">Co-Fusion: Ai-Powered Data Insights</p>
+              <p className="chat-subtitle">Co-Fusion: AI-Powered Data Insights</p>
             </div>
           </div>
           <div className="chat-header-right">
