@@ -83,14 +83,51 @@
   color: #868e96;
   margin-top: 4px;
   padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .message-user .message-timestamp {
   text-align: right;
+  justify-content: flex-end;
 }
 
 .message-bot .message-timestamp {
   text-align: left;
+  justify-content: flex-start;
+}
+
+.copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: #868e96;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.copy-button:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.05);
+  color: #495057;
+  transform: scale(1.1);
+}
+
+.copy-button:active {
+  transform: scale(0.95);
+}
+
+.copy-button svg {
+  flex-shrink: 0;
 }
 
 .typing-indicator {

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Message as MessageType } from '../types/chat';
-import { User, Bot } from 'lucide-react';
+import { User, Bot, Copy, Check } from 'lucide-react';
 import { clsx } from 'clsx';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -15,6 +15,17 @@ interface MessageProps {
 
 const Message: React.FC<MessageProps> = ({ message }) => {
   const isUser = message.sender === 'user';
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
   
   const formatDateTime = (date: Date): string => {
     const day = date.getDate().toString().padStart(2, '0');
@@ -117,13 +128,24 @@ const Message: React.FC<MessageProps> = ({ message }) => {
               {message.text}
             </ReactMarkdown>
           )}
-        </div>
-        {message.chartData && (
+        </div>        
+           {message.chartData && (
           <Chart chartData={message.chartData} />
         )}
         {!message.isTyping && (
-           <div className="message-timestamp">
+          <div className="message-timestamp">
             {formatDateTime(message.timestamp)}
+            {isUser && (
+              <button
+                type='button'
+                className="copy-button"
+                onClick={handleCopy}
+                aria-label="Copy Message"
+                title="Copy Message"
+              >
+                {copied ? <Check size={12} /> : <Copy size={12} />}
+              </button>
+            )}
           </div>
         )}
       </div>
