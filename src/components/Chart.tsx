@@ -32,12 +32,13 @@ const COLORS = [
   '#96CEB4',
   '#FFEAA7',
   '#DDA0DD',
-  '#98D8C8',
-  '#F7DC6F'
+  '#98D8C8',  '#F7DC6F'
 ];
 
-const Chart: React.FC<ChartProps> = ({ chartData }) => {
-  const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+  
+  // We won't use randomized colors anymore
+  // Instead we'll use sequential colors from the COLORS array
   
   const getPieRadius = () => {
     if (typeof window !== 'undefined') {
@@ -72,8 +73,7 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {
         return (
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xKey || 'name'} />
-            <YAxis />
+            <XAxis dataKey={xKey || 'name'} />            <YAxis />
             <Tooltip />
             <Legend />
             <Bar dataKey={yKey || 'value'}>
