@@ -1,3 +1,6 @@
+import { SupportedChartTypes, type ChartDataResponse } from "../types/chat";
+
+
 // Connection configuration
 const SERVER_URL = 'http://localhost:4000';
 const BLANK_STRING = '';
@@ -98,12 +101,10 @@ export async function sendMessage(sessionId: string, message: string, handleChat
       if (done) break;
       result += decoder.decode(value, { stream: true });
       handleChatUpdate(result, done);
-    }
-
-    // Chart description streaming logic
+    }    // Chart description streaming logic
     if (isJsonObject(result)) {
-      const chartData = JSON.parse(result);
-      if (chartData?.type === 'bar' || chartData?.type === 'line' || chartData?.type === 'pie' || chartData?.type === 'scatter') {
+      const chartData: ChartDataResponse = JSON.parse(result);
+      if (SupportedChartTypes.includes(chartData?.type)) {
         chartData.analysis = chartData?.analysis ? `### Here is your requested chart & its observations\n\n---\n\n${chartData?.analysis}` : BLANK_STRING;
         const chunks: string[] = [];
         const chunkSize = 15;
@@ -117,7 +118,7 @@ export async function sendMessage(sessionId: string, message: string, handleChat
               const isLastChunk = index === chunks.length - 1;
               handleChatUpdate(JSON.stringify({...chartData, analysis: currentText}), isLastChunk);
               window.clearTimeout(timeoutId);
-          }, index * 50);
+          }, index * 100); // Adjust delay as needed
         });
       }
     };

@@ -49,7 +49,7 @@ export interface AppState {
 }
 
 export interface ChartDataResponse {
-  type: 'pie' | 'bar' | 'line' | 'scatter';
+  type: ChartType;
   data: [];
   title?: string;
   xKey?: string;
@@ -57,3 +57,6 @@ export interface ChartDataResponse {
   description?: string;
   analysis?: string;
 }
+
+export type ChartType = 'pie' | 'bar' | 'line' | 'scatter';
+export const SupportedChartTypes = ['bar', 'line', 'pie', 'scatter'];
