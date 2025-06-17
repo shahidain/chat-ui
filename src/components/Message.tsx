@@ -61,9 +61,12 @@ const Message: React.FC<MessageProps> = ({ message }) => {
         ) : (
           <Bot size={20} />
         )}
-      </div>      
+      </div>        
       <div className="message-content">
-        <div className="message-text">
+        {message.chartData && (
+          <Chart chartData={message.chartData} />
+        )}
+        <div className={`message-text${message.chartData ? ' message-text-with-chart' : ''}`}>
           {message.isTyping ? (
             <div className="typing-indicator">
               <span></span>
@@ -141,10 +144,7 @@ const Message: React.FC<MessageProps> = ({ message }) => {
               {message.text}
             </ReactMarkdown>
           )}
-        </div>
-        {message.chartData && (
-          <Chart chartData={message.chartData} />
-        )}        {!message.isTyping && (
+        </div>{!message.isTyping && (
            <div className="message-timestamp">
             {isUser && (
               <div className="copy-icon-container">

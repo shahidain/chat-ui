@@ -1,5 +1,6 @@
 // Connection configuration
 const SERVER_URL = 'http://localhost:4000';
+const BLANK_STRING = '';
 
 export async function connectToServer(handleChatUpdate: (data: string) => void) {
   try {
@@ -90,17 +91,50 @@ export async function sendMessage(sessionId: string, message: string, handleChat
     const reader = response.body?.getReader();
     const decoder = new TextDecoder('utf-8');
     if (!reader) throw new Error('No response body reader available');
-    
-    let result = '';
+
+    let result = BLANK_STRING;
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
       result += decoder.decode(value, { stream: true });
       handleChatUpdate(result, done);
     }
+
+    // Chart description streaming logic
+    if (isJsonObject(result)) {
+      const chartData = JSON.parse(result);
+      if (chartData?.type === 'bar' || chartData?.type === 'line' || chartData?.type === 'pie' || chartData?.type === 'scatter') {
+        chartData.analysis = chartData?.analysis ? `### Here is your requested chart & its observations\n\n---\n\n${chartData?.analysis}` : BLANK_STRING;
+        const chunks: string[] = [];
+        const chunkSize = 15;
+        for (let i=0; i <chartData?.analysis?.length; i += chunkSize) {
+          chunks.push(chartData?.analysis.substring(i, i + chunkSize));
+        }
+        let currentText = BLANK_STRING;
+        chunks.forEach((chunk, index) => {
+        const timeoutId = setTimeout(() => {
+            currentText += chunk;
+              const isLastChunk = index === chunks.length - 1;
+              handleChatUpdate(JSON.stringify({...chartData, analysis: currentText}), isLastChunk);
+              window.clearTimeout(timeoutId);
+          }, index * 50);
+        });
+      }
+    };
+
     handleChatUpdate(result, true);
   } catch (error) {
     console.warn("MCP server error, falling back to simulation:", error);
     throw error; // Re-throw to trigger fallback in ChatContainer
   }
-}
+};
+
+export const isJsonObject = (str: string): boolean => {
+  try {
+    const parsed = JSON.parse(str);
+    return typeof parsed === 'object' && parsed !== null;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (exception) {
+    return false;
+  }
+};

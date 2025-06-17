@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 import { Menu, RadioIcon } from 'lucide-react';
 import { clsx } from 'clsx';
 import './ChatContainer.css';
-import { sendMessage, connectToServer } from '../mcp-server/connection';
+import { sendMessage, connectToServer, isJsonObject } from '../mcp-server/connection';
 
 
 const ChatContainer: React.FC = () => {
@@ -23,16 +23,6 @@ const ChatContainer: React.FC = () => {
   const generateChatTitle = (firstMessage: string): string => {
     const words = firstMessage.trim().split(' ').slice(0, 4);
     return words.join(' ') + (firstMessage.split(' ').length > 4 ? '...' : '');
-  };
-
-  const isJsonObject = (str: string): boolean => {
-    try {
-      const parsed = JSON.parse(str);
-      return typeof parsed === 'object' && parsed !== null;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (exception) {
-      return false;
-    }
   };
 
   const handleNoConnection = useCallback((sessionId: string) => {
@@ -64,7 +54,7 @@ const ChatContainer: React.FC = () => {
     let parsedData: ChartDataResponse = {} as ChartDataResponse;
     if (isJsonObjectData)
       parsedData = JSON.parse(data) as ChartDataResponse;
-    const chartMessage = `### Here is your requested chart\n${parsedData?.analysis}`;
+    const chartMessage = parsedData?.analysis || 'No analysis available';
     setAppState(prev => ({
       ...prev,
       sessions: prev.sessions.map(session => {
