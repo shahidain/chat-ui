@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   PieChart,
   Pie,
@@ -35,10 +35,58 @@ const COLORS = [
   '#98D8C8',  '#F7DC6F'
 ];
 
-const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
+// Custom comparison function for React.memo to deeply compare chartData
+const arePropsEqual = (prevProps: ChartProps, nextProps: ChartProps): boolean => {
+  // Quick reference check first
+  if (prevProps.chartData === nextProps.chartData) {
+    return true;
+  }
   
-  // We won't use randomized colors anymore
-  // Instead we'll use sequential colors from the COLORS array
+  const prev = prevProps.chartData;
+  const next = nextProps.chartData;
+  
+  // Compare primitive properties
+  if (
+    prev.type !== next.type ||
+    prev.title !== next.title ||
+    prev.xKey !== next.xKey ||
+    prev.yKey !== next.yKey ||
+    prev.nameKey !== next.nameKey ||
+    prev.valueKey !== next.valueKey ||
+    prev.description !== next.description
+  ) {
+    return false;
+  }
+  
+  // Compare data arrays
+  if (prev.data.length !== next.data.length) {
+    return false;
+  }
+  
+  // Deep compare data array elements
+  for (let i = 0; i < prev.data.length; i++) {
+    const prevItem = prev.data[i];
+    const nextItem = next.data[i];
+    
+    const prevKeys = Object.keys(prevItem);
+    const nextKeys = Object.keys(nextItem);
+    
+    if (prevKeys.length !== nextKeys.length) {
+      return false;
+    }
+    
+    for (const key of prevKeys) {
+      if (prevItem[key] !== nextItem[key]) {
+        return false;
+      }
+    }
+  }
+  
+  return true;
+};
+
+const Chart: React.FC<ChartProps> = React.memo(({ chartData }) => {
+  const { type, title, data, xKey, yKey, nameKey, valueKey } = chartData;
   
   const getPieRadius = () => {
     if (typeof window !== 'undefined') {
@@ -47,8 +95,9 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, dat
     return 130;
   };
 
-  const renderChart = () => {
-    switch (type) {      case 'pie':
+  const renderChart = useMemo(() => {
+    switch (type) {      
+      case 'pie':
         return (
           <PieChart width={400} height={300}>
             <Pie
@@ -69,11 +118,13 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, dat
             <Tooltip />
             <Legend />
           </PieChart>
-        );      case 'bar':
+        );      
+      case 'bar':
         return (
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey={xKey || 'name'} />            <YAxis />
+            <XAxis dataKey={xKey || 'name'} />            
+            <YAxis />
             <Tooltip />
             <Legend />
             <Bar dataKey={yKey || 'value'}>
@@ -121,18 +172,20 @@ const Chart: React.FC<ChartProps> = ({ chartData }) => {const { type, title, dat
       default:
         return <div>Unsupported chart type</div>;
     }
-  };
+  }, [type, data, xKey, yKey, nameKey, valueKey]);
 
   return (
     <div className="chart-container">
       {title && <h4 className="chart-title">{title}</h4>}
       <div className="chart-wrapper">
         <ResponsiveContainer width="100%" height={300}>
-          {renderChart()}
+          {renderChart}
         </ResponsiveContainer>
       </div>
     </div>
   );
-};
+}, arePropsEqual);
+
+Chart.displayName = 'Chart';
 
 export default Chart;
